@@ -1,0 +1,23 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+
+# so libs
+*.so
+*.pyx
+*.o
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# pycharm
+.idea
+
+# datasets
+
+# models
+*.pth*
+
+# experiments log files
+
+# third party stuff
+src/thirdparty/cocoapi/

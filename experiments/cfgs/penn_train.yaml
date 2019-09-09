@@ -1,0 +1,42 @@
+# general
+experiment_name: ""              # prefix of all artifacts ('' means None, create next name)
+device: cuda         # 'cuda' or 'cpu'
+workers: 4           # default workers
+output_dir: '../experiments/logs'
+gpu: [0]
+
+pretrained_path: ''
+
+# distributive training
+world_size: 1
+dist_url: 'env://'
+
+DATASET:
+  name: 'penn'
+  path: '/media/andrii/earth/work/data/PennFudanPed'
+  batch_size: 1
+  batch_size_test: 1
+  aspect_ratio_group_factor: 0
+
+TRAIN:
+  epochs: 13
+  lr: 0.02
+  momentum: 0.9
+  weight_decay: 0.0001
+  lr_step_size: 8
+  lr_steps: [8, 11]
+  lr_gamma: 0.1
+  resume: ''
+
+EVAL:
+  eval_metric: 'bbox'   # figure of merit to select best model - 'bbox' or 'segm'
+  save_file: ''
+
+MODEL:
+  name: 'fasterrcnn_resnet50_fpn'
+
+LOG:
+  print_freq: 20
+  print_freq_test: 100
+  smooth_window: 1
+  with_tensorboard: True

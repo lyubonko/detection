@@ -1,0 +1,30 @@
+# general
+experiment_name: ""              # prefix of all artifacts ('' means None, create next name)
+device: cuda                     # 'cuda' or 'cpu'
+workers: 8                       # default workers
+output_dir: '../experiments/logs'
+
+pretrained_path: '../materials/models/original/fasterrcnn_resnet50_fpn_coco-258fb6c6.pth'
+
+# distributive training
+world_size: 1
+dist_url: 'env://'
+
+DATASET:
+  name: 'coco'
+  path: '/media/andrii/earth/work/data/MS_COCO'
+  batch_size: 1
+  batch_size_test: 1
+  aspect_ratio_group_factor: 0
+
+EVAL:
+  eval_metric: 'bbox'   # figure of merit to select best model - 'bbox' or 'segm'
+  save_results: True
+
+MODEL:
+  name: 'fasterrcnn_resnet50_fpn'
+
+LOG:
+  print_freq_test: 1000
+  make_log: True
+  with_tensorboard: True
