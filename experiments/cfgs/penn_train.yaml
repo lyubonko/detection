@@ -3,7 +3,7 @@ experiment_name: ""              # prefix of all artifacts ('' means None, creat
 device: cuda         # 'cuda' or 'cpu'
 workers: 4           # default workers
 output_dir: '../experiments/logs'
-gpu: [0]
+gpu: 0
 
 pretrained_path: ''
 
@@ -14,29 +14,55 @@ dist_url: 'env://'
 DATASET:
   name: 'penn'
   path: '/media/andrii/earth/work/data/PennFudanPed'
-  batch_size: 1
-  batch_size_test: 1
+  transform: 'transform_2'
+  batch_size: 8
+  batch_size_test: 8
   aspect_ratio_group_factor: 0
 
 TRAIN:
   epochs: 13
   lr: 0.02
-  momentum: 0.9
-  weight_decay: 0.0001
-  lr_step_size: 8
   lr_steps: [8, 11]
   lr_gamma: 0.1
+  momentum: 0.9
+  weight_decay: 0.0001
   resume: ''
+  resume_optimizer: False
+  warmup: True
 
 EVAL:
   eval_metric: 'bbox'   # figure of merit to select best model - 'bbox' or 'segm'
   save_file: ''
 
+#MODEL:
+#  name: 'fasterrcnn_resnet50_fpn'
+
 MODEL:
-  name: 'fasterrcnn_resnet50_fpn'
+  name: 'center'
+  arch: 'dla_34'
+  heads_hm: 80
+  heads_wh: 2
+  heads_reg: 2
+  head_conv: 256
+  num_classes: 2
+  max_per_image: 100
+
+#  name: 'center'
+#  arch: 'resdcn_18'
+#  heads_hm: 80
+#  heads_wh: 2
+#  heads_reg: 2
+#  head_conv: 64
+#  num_classes: 80
+#  max_per_image: 100
+
+LOSS:
+  wh_weight: 0.1
+  off_weight: 0.01
+  hm_weight: 1
 
 LOG:
-  print_freq: 20
+  print_freq: 2
   print_freq_test: 100
   smooth_window: 1
-  with_tensorboard: True
+  with_tensorboard: False

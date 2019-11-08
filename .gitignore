@@ -21,3 +21,6 @@ __pycache__/
 
 # third party stuff
 src/thirdparty/cocoapi/
+
+# eggs
+*egg-info*

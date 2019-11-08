@@ -10,6 +10,7 @@ import datetime
 import os
 import sys
 import time
+import copy
 
 import torch
 import torch.utils.data
@@ -31,28 +32,34 @@ def main(args, metric_logger):
 
     metric_logger.print_out("Creating model")
     model, model_without_ddp = prepare_model(num_classes, device, args.pretrained_path,
-                                             args.MODEL.name, args.distributed, args.gpu)
+                                             args.MODEL, args.distributed, args.gpu, args.LOSS)
 
     metric_logger.print_out("Setting optimizer & scheduler")
     optimizer, lr_scheduler = prepare_optimizer(args, model)
 
     # how we select best model, the value suppose to be - the bigger the better
-    figure_of_merit_best = 0
+    figure_of_merit_best = 0.0
 
     if args.TRAIN.resume:
         metric_logger.print_out("Training is resumed from: {}".format(args.TRAIN.resume))
         checkpoint = torch.load(args.TRAIN.resume, map_location='cpu')
         model_without_ddp.load_state_dict(checkpoint['model'])
-        optimizer.load_state_dict(checkpoint['optimizer'])
-        lr_scheduler.load_state_dict(checkpoint['lr_scheduler'])
         figure_of_merit_best = checkpoint['accuracy']
+        if args.TRAIN.resume_optimizer:
+            optimizer.load_state_dict(checkpoint['optimizer'])
+            lr_scheduler.load_state_dict(checkpoint['lr_scheduler'])
+        else:
+            lr_scheduler_prev = copy.deepcopy(lr_scheduler)
+            lr_scheduler_prev.load_state_dict(checkpoint['lr_scheduler'])
+            lr_scheduler.last_epoch = lr_scheduler_prev.last_epoch
 
     metric_logger.print_out("Start training")
     start_time = time.time()
     for epoch in range(lr_scheduler.last_epoch, args.TRAIN.epochs):
         if args.distributed:
             train_sampler.set_epoch(epoch)
-        train_one_epoch(model, optimizer, data_loader, device, epoch, metric_logger, args.LOG.print_freq)
+        train_one_epoch(model, optimizer, data_loader, device, epoch, metric_logger, args.LOG.print_freq,
+                        warmup=args.TRAIN.warmup)
         lr_scheduler.step()
         if args.output_dir:
             utils.save_on_master({

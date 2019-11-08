@@ -3,6 +3,7 @@ experiment_name: ""              # prefix of all artifacts ('' means None, creat
 device: cuda                     # 'cuda' or 'cpu'
 workers: 8                       # default workers
 output_dir: '../experiments/logs'
+gpu: [1]
 
 pretrained_path: '../materials/models/original/fasterrcnn_resnet50_fpn_coco-258fb6c6.pth'
 
@@ -16,6 +17,7 @@ DATASET:
   batch_size: 1
   batch_size_test: 1
   aspect_ratio_group_factor: 0
+  transform: 'transform_0'
 
 EVAL:
   eval_metric: 'bbox'   # figure of merit to select best model - 'bbox' or 'segm'

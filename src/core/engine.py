@@ -11,7 +11,7 @@ from core.coco_eval import CocoEvaluator
 from core import utils
 
 
-def train_one_epoch(model, optimizer, data_loader, device, epoch, metric_logger, print_freq):
+def train_one_epoch(model, optimizer, data_loader, device, epoch, metric_logger, print_freq, warmup=True):
     model.train()
 
     metric_logger.renew(epoch_size=len(data_loader), delimiter="  ", epoch=epoch, train=True)
@@ -19,13 +19,14 @@ def train_one_epoch(model, optimizer, data_loader, device, epoch, metric_logger,
     header = 'Epoch: [{}]'.format(epoch)
 
     lr_scheduler = None
-    if epoch == 0:
+    if epoch == 0 and warmup:
         warmup_factor = 1. / 1000
         warmup_iters = min(1000, len(data_loader) - 1)
 
         lr_scheduler = utils.warmup_lr_scheduler(optimizer, warmup_iters, warmup_factor)
 
     for images, targets in metric_logger.log_every(data_loader, print_freq, header):
+
         images = list(image.to(device) for image in images)
         targets = [{k: v.to(device) for k, v in t.items()} for t in targets]
 
