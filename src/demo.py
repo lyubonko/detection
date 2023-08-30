@@ -24,7 +24,7 @@ def get_transform(train):
 
 # === pathes
 pathes = {}
-pathes['project_root'] = '../'
+pathes['project_root'] = ''
 pathes['data'] = os.path.join(pathes['project_root'], 'materials/images/')
 
 # === load image
@@ -82,4 +82,4 @@ box_info = {'bbox_text': bbox_text,
             'path_image': img_path}
 
 plot_single_image(box_info, fig_size=18, make_print=False)
-plt.savefig('../materials/images/out_demo.png')
+plt.savefig('materials/images/out_demo.png')
