@@ -24,3 +24,6 @@ src/thirdparty/cocoapi/
 
 # eggs
 *egg-info*
+
+# tmp
+materials/images/out_demo.png
